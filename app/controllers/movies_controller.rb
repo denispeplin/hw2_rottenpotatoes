@@ -14,8 +14,9 @@ class MoviesController < ApplicationController
       session[:ratings] || @all_ratings.inject({}) {|h, k| h[k]=1; h}
     end
 
-    @order = params[:order]
-
+    session[:order] = params[:order] if params[:order]
+    @order = session[:order]
+    
     @movies = if @order
       Movie.order(@order)
     else
