@@ -8,8 +8,12 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
-    @ratings = params[:ratings] || @all_ratings.inject({}) {|h, k| h[k]=1; h}
-    
+    @ratings = if params[:ratings]
+      session[:ratings] = params[:ratings]
+    else
+      session[:ratings] || @all_ratings.inject({}) {|h, k| h[k]=1; h}
+    end
+
     @order = params[:order]
 
     @movies = if @order
