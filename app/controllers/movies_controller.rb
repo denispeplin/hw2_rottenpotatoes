@@ -16,7 +16,7 @@ class MoviesController < ApplicationController
       Movie.order(@order)
     else
       Movie
-    end.all
+    end.where(rating: @ratings.keys).all
   end
 
   def new
