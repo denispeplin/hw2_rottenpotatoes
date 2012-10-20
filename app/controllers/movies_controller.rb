@@ -7,6 +7,8 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings = Movie.all_ratings
+    
     @order = params[:order]
 
     @movies = if @order
