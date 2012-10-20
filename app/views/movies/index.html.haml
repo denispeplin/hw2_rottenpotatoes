@@ -2,10 +2,10 @@
 %h1 All Movies
 
 = form_tag movies_path, :method => :get, id: :ratings_form do
+  = hidden_field_tag 'order', @order
   Include: 
   - @all_ratings.each do |rating|
-    = rating
-    = hidden_field_tag 'order', @order
+    = rating 
     = check_box_tag "ratings[#{rating}]", 1, @ratings[rating], id: "ratings_#{rating}"
   = submit_tag 'Refresh', id: :ratings_submit
 
