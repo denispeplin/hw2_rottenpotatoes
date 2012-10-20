@@ -9,11 +9,25 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.all_ratings
 
-    session[:ratings] = params[:ratings] if params[:ratings]
-    @ratings = session[:ratings] || @all_ratings.inject({}) {|h, k| h[k]=1; h}
+    if params[:ratings]
+      session[:ratings] = params[:ratings]
+    elsif session[:ratings]
+      @ratings = session[:ratings]
+    end
 
-    session[:order] = params[:order] if params[:order]
-    @order = session[:order]
+    # TOTO: avoid logic duplication
+    if params[:order]
+      session[:order] = params[:order]
+    elsif session[:order]
+      @order = session[:order]
+    end
+
+    if @ratings or @order
+      fill_ratings_and_order_from_params
+      redirect_to movies_path(order: @order, ratings: @ratings)
+    end
+
+    fill_ratings_and_order_from_params
     
     @movies = if @order
       Movie.order(@order)
@@ -50,4 +64,10 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
 
+  private
+
+  def fill_ratings_and_order_from_params
+    @ratings ||= params[:ratings] || @all_ratings.inject({}) {|h, k| h[k]=1; h}
+    @order ||= params[:order]
+  end
 end
